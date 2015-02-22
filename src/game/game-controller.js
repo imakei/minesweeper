@@ -1,8 +1,8 @@
 angular
 .module('ngMineSweeper')
-.controller('GameCtrl', function($scope, $gameService, settingConst) {
+.controller('GameCtrl', function($scope, $gameService, $settingConst) {
 
-    $scope.title = settingConst.title;
+    $scope.title = $settingConst.title;
     $scope.tiles = [];
     $scope.gameStatus = '';
     $scope.gameSettings = {
@@ -13,11 +13,9 @@ angular
       bombs: 5
     };
 
-    $scope.status = $gameService.getGameStatus;
-
     var setup = function(){
       $gameService.setup({
-        tiles: $scope.tiles,
+        tiles: $scope.tiles, //いづれcacheから読み込めるように
         gameStatus: $scope.gameStatus,
         gameSettings: $scope.gameSettings
       });
@@ -56,8 +54,7 @@ angular
 
         $scope.tiles.push({
           number: strNum,
-          isOpen: false,
-          isFlag: false,
+          isOpen: false
         });
       }
 
@@ -123,6 +120,17 @@ angular
         default:
           return num.toString();
       }
+    };
+
+    $scope.checkGameComplete = function(){
+      var t = _.find($scope.tiles, function(tile) {
+        return !tile.isOpen && tile.number !== 'B';
+      });
+      console.log(t);
+      if (!t) {
+        return true;
+      }
+      return false;
     };
 
     setup();

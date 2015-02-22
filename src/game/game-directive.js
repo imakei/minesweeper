@@ -1,22 +1,32 @@
 angular
 .module('ngMineSweeper')
-.directive('tile', function($gameService) {
+.directive('tile', function($rootScope, $gameService) {
 
   return {
     restrict: 'AE',
     replace: true,
-    scope: true,
     templateUrl: 'tile.html',
     link: function(scope, element) {
 
       var tile = scope.tile;
-      console.log(scope);
       scope.open = function() {
-        if(checkBomb()){
-          $gameService.setGameStatus('gameOver');
-        } else {
-          tile.isOpen = true;
-          $gameService.checkClear();
+        if (tile.isFlag) {
+          return;
+        }
+        switch (tile.number) {
+          case 'B':
+            scope.$parent.gameStatus = 'gameOver';
+            return;
+
+          // case '':
+          //   $gameService.setGameStatus('');
+          //   return;
+
+          default:
+            tile.isOpen = true;
+            if(scope.checkGameComplete()){
+              scope.$parent.gameStatus = 'gameComplete';
+            }
         }
       };
 

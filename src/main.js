@@ -2,7 +2,7 @@ angular
 .module('ngMineSweeper', [])
 .config(function() {})
 .run(function(){})
-.constant('settingConst', {
+.constant('$settingConst', {
   'title': 'imakei\'s MineSweeper'
 })
 ;
