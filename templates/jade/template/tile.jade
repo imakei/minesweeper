@@ -1,0 +1,4 @@
+.tile(ng-click='open()' ng-class='{flipped: tile.isOpen}')
+  .tile-face.tile-flag(ng-if='tile.isFlag') F
+  .tile-face.tile-front
+  .tile-face.tile-flipped(ng-if='tile.isOpen' ng-bind='tile.number')

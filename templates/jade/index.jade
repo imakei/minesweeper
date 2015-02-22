@@ -1,0 +1,20 @@
+doctype html
+html(ng-app='ngMineSweeper')
+  head
+    title MineSweeper
+    link(rel='stylesheet' type='text/css' href='./css/main.css')
+    meta(name='viewport' content='initial-scale=1,maximum-scale=1')
+  body(ng-controller='GameCtrl')
+    .wrapper
+      .header
+        h1 {{ title }}
+      .game-container(onContextmenu='return false')
+        .message-container(ng-if='gameStatus === "gameOver"') game over ...
+        .message-container(ng-if='gameStatus === "gameComplete"') game complete!!
+        .tile-container
+          .tile(ng-repeat='tile in tiles' tile check-game-complete='checkGameComplete')
+      .game-explanation
+    script(type='text/javascript' src='./js/components.js')
+    script(type='text/javascript' src='./js/main.js')
+    script(type='text/javascript' src='./js/templates.js')
+

@@ -1,0 +1,20 @@
+{
+  "name": "minesweeper",
+  "version": "0.0.1",
+  "homepage": "https://github.com/imakei/minesweeper",
+  "authors": [
+    "imakei <imakei385@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.8",
+    "lodash": "~2.4.1"
+  }
+}
