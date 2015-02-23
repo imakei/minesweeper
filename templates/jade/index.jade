@@ -8,12 +8,22 @@ html(ng-app='ngMineSweeper')
     .wrapper
       .header
         h1 {{ title }}
-      .game-container(onContextmenu='return false')
+        p {{ gameSettings }}
+      .game-container(onContextmenu='return false' ng-style='gameSettings.container.size')
         .message-container(ng-if='gameStatus === "gameOver"') game over ...
         .message-container(ng-if='gameStatus === "gameComplete"') game complete!!
-        .tile-container
-          .tile(ng-repeat='tile in tiles' tile check-game-complete='checkGameComplete')
-      .game-explanation
+        .tile-container.cf
+          .tile(ng-repeat='tile in tiles' class='tile-{{gameSettings.tileSize}}' tile check-game-complete='checkGameComplete')
+      .game-config
+        p マスの数 横 :
+          input(type='number' max=30 min=5 ng-model='gameSettings.dementions.width')
+        p マスの数 縦 :
+          input(type='number' max=15 min=5 ng-model='gameSettings.dementions.height')
+        p 爆弾の数:
+          input(type='number' max=50 min=1 ng-model='gameSettings.bombs')
+        p
+          input(type='button' ng-click='init()' value='GameReset')
+        p.error {{ error }}
     script(type='text/javascript' src='./js/components.js')
     script(type='text/javascript' src='./js/main.js')
     script(type='text/javascript' src='./js/templates.js')
