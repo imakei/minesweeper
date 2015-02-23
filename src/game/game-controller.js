@@ -1,3 +1,8 @@
+/*=================================================
+| 
+| のちのちサービスに処理を移す．
+|
+===================================================*/
 angular
 .module('ngMineSweeper')
 .controller('GameCtrl', function($scope, $gameService, $settingConst) {
@@ -10,22 +15,47 @@ angular
         width: 5,
         height: 5
       },
-      bombs: 5
+      bombs: 5,
+      container: {
+        size: {
+          width: '530px'
+        },
+        margin: 5
+      },
+      tileSize: 100
     };
-
-    var setup = function(){
-      $gameService.setup({
-        tiles: $scope.tiles, //いづれcacheから読み込めるように
-        gameStatus: $scope.gameStatus,
-        gameSettings: $scope.gameSettings
-      });
-    };
+    $scope.error = '';
 
     var init = function(){
-      $scope.gameStatus = 'play';
+      var d = $scope.gameSettings.dementions;
+      var bombs = $scope.gameSettings.bombs;
+      if ( bombs >= d.width*d.height ){
+        //あとでconstに．
+        $scope.error = 'マスの数よりも爆弾の数を少なくしてください．';
+        return;
+      }
+      setSize();
       var bombsArray = generateBombsArray();
       generateTiles(bombsArray);
     };
+
+    $scope.init = init;
+
+    var setSize = function(){
+      var settings = $scope.gameSettings;
+      var width = settings.dementions.width;
+      var container = settings.container;
+      if (width < 6) {
+        $scope.gameSettings.tileSize = 100;
+      } else if (width < 12) {
+        $scope.gameSettings.tileSize = 50;
+      } else { // width < 30
+        $scope.gameSettings.tileSize = 30;
+      }
+      var containerSize = container.margin+(settings.tileSize+container.margin)*settings.dementions.width;
+      container.size.width = containerSize+'px';
+    };
+
 
     var generateBombsArray = function(){
       var settings = $scope.gameSettings;
@@ -33,16 +63,17 @@ angular
       for(var i=0; i<settings.bombs; i++){
         arr.push(1);
       }
-      for(i=0; i < settings.dementions.width*settings.dementions.height-settings.bombs; i++){
+      for(i=0; i < settings.dementions.width*settings.dementions.height-settings.bombs-1; i++){
         arr.push(0);
       }
+      console.log(arr.length);
       arr.push(0);
       return _.shuffle(arr);
     };
 
     var generateTiles = function(bombs){
-      for(var i=0; i<25; i++){
-
+      $scope.tiles = [];
+      for(var i=0; i<bombs.length; i++){
         var num;
         if(bombs[i]){
           num = -1;
@@ -54,7 +85,8 @@ angular
 
         $scope.tiles.push({
           number: strNum,
-          isOpen: false
+          isOpen: false,
+          isFlag: false
         });
       }
 
@@ -133,7 +165,6 @@ angular
       return false;
     };
 
-    setup();
     init();
   }
 )
