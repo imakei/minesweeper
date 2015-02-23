@@ -48,11 +48,9 @@ angular
         num = countAroundBombs(i, bombs);
       }
 
-      var strNum = numToString(num);
-
       tiles.push({
         id: i,
-        number: strNum,
+        number: num,
         isOpen: false,
         isFlag: false
       });
@@ -108,25 +106,12 @@ angular
       }
     }
 
-    return count | '';
+    return count;
   };
-
-  var numToString = function(num){
-    switch(num){
-      case -1:
-        console.log('Bomb!!');
-        return 'B';
-      case 0:
-        return '';
-      default:
-        return num.toString();
-    }
-  };
-
 
   var checkComplete = function(){
     var arr = _.filter(
-      _.filter(tiles, function(n) { return (n.number !== 'B'); }),
+      _.filter(tiles, function(n) { return (n.number !== $settingConst.tileNumber.bomb); }),
       { isOpen: false }
     );
     return arr.length === 0;
@@ -147,11 +132,11 @@ angular
 
     tile.isOpen = true;
     switch (tile.number) {
-      case 'B':
+      case $settingConst.tileNumber.bomb:
         setGameStatus($settingConst.status.gameOver);
         return;
 
-      case '':
+      case $settingConst.tileNumber.white:
         openAroundTiles(index);
         return;
 
@@ -165,7 +150,7 @@ angular
 
   var checkGameComplete = function(){
     var t = _.find(tiles, function(tile) {
-      return !tile.isOpen && tile.number !== 'B';
+      return !tile.isOpen && tile.number !== $settingConst.tileNumber.bomb;
     });
     if (!t) {
       return true;
