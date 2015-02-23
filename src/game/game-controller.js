@@ -9,7 +9,10 @@ angular
 
     $scope.title = $settingConst.title;
     $scope.tiles = [];
-    $scope.gameStatus = '';
+    $scope.game = {
+      status: ''
+    };
+    $scope.gameStatus = new String('');
     $scope.gameSettings = {
       dementions : {
         width: 5,
@@ -27,19 +30,16 @@ angular
     $scope.error = '';
 
     var init = function(){
-      var d = $scope.gameSettings.dementions;
-      var bombs = $scope.gameSettings.bombs;
-      if ( bombs >= d.width*d.height ){
-        //あとでconstに．
-        $scope.error = 'マスの数よりも爆弾の数を少なくしてください．';
-        return;
-      }
       setSize();
       var bombsArray = generateBombsArray();
       generateTiles(bombsArray);
+      $gameService.init({
+        tiles: $scope.tiles, //いづれcacheから読み込めるように
+        game: $scope.game,
+        gameSettings: $scope.gameSettings
+      });
+      $gameService.setGameStatus('play');
     };
-
-    $scope.init = init;
 
     var setSize = function(){
       var settings = $scope.gameSettings;
@@ -66,7 +66,6 @@ angular
       for(i=0; i < settings.dementions.width*settings.dementions.height-settings.bombs-1; i++){
         arr.push(0);
       }
-      console.log(arr.length);
       arr.push(0);
       return _.shuffle(arr);
     };
@@ -84,6 +83,7 @@ angular
         var strNum = numToString(num);
 
         $scope.tiles.push({
+          id: i,
           number: strNum,
           isOpen: false,
           isFlag: false
@@ -164,6 +164,19 @@ angular
       }
       return false;
     };
+
+    $scope.reset = function(){
+      var d = $scope.gameSettings.dementions;
+      var bombs = $scope.gameSettings.bombs;
+      if ( bombs >= d.width*d.height ){
+        //あとでconstに．
+        $scope.error = 'マスの数よりも爆弾の数を少なくしてください．';
+        return;
+      }
+      $scope.error = '';
+      init();
+    };
+
 
     init();
   }

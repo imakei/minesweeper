@@ -13,28 +13,7 @@ angular
         if (tile.isFlag) {
           return;
         }
-        switch (tile.number) {
-          case 'B':
-            scope.$parent.gameStatus = 'gameOver';
-            return;
-
-          // case '':
-          //   $gameService.setGameStatus('');
-          //   return;
-
-          default:
-            tile.isOpen = true;
-            if(scope.checkGameComplete()){
-              scope.$parent.gameStatus = 'gameComplete';
-            }
-        }
-      };
-
-      var checkBomb = function(){
-        if(tile.number == 'B'){
-          return true;
-        }
-        return false;
+        $gameService.openTile(tile.id);
       };
 
       var toggleFlag = function() {
@@ -43,6 +22,7 @@ angular
           tile.isFlag = !tile.isFlag;
         });
       };
+
       element.on('contextmenu', toggleFlag);
     }
   };
