@@ -36,7 +36,7 @@ http://localhost:9999
 License
 ----
 
-ng-manager is under MIT license.
+this is under MIT license.
 
 
 
