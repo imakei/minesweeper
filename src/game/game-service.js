@@ -1,18 +1,128 @@
 /* global _ */
 angular
 .module('ngMineSweeper')
-.factory('$gameService', function() {
+.factory('$gameService', function($settingConst) {
 
-  var tiles;
+  var tiles = [];
   var game;
   var gameSettings;
 
   var init =  function(opts){
-    tiles = opts.tiles;
     game = opts.game;
     gameSettings = opts.gameSettings;
-    return;
+
+    generateTiles();
+    setGameStatus($settingConst.status.play);
+
+    return tiles;
   };
+
+  var generateBombsArray = function(){
+    var settings = gameSettings;
+    var d = gameSettings.dementions;
+
+    var arr  = [];
+    //bombを入れる．
+    for(var i=0; i<settings.bombs; i++){
+      arr.push(1);
+    }
+
+    //bombじゃないやつを入れる．
+    for(i=0; i < d.width*d.height-settings.bombs; i++){
+      arr.push(0);
+    }
+
+    return _.shuffle(arr);
+  };
+
+  var generateTiles = function(){
+    tiles = [];
+
+    var bombs = generateBombsArray();
+
+    for(var i=0; i<bombs.length; i++){
+      var num;
+      if(bombs[i]){
+        num = -1;
+      } else {
+        num = countAroundBombs(i, bombs);
+      }
+
+      var strNum = numToString(num);
+
+      tiles.push({
+        id: i,
+        number: strNum,
+        isOpen: false,
+        isFlag: false
+      });
+    }
+
+  };
+
+  var countAroundBombs = function(index, bombs){
+    var count = 0;
+    var width = gameSettings.dementions.width;
+    var height = gameSettings.dementions.height;
+
+    // なんかもっとうまい方法ありそう．
+    //上
+    if(bombs[index-width]){
+      count++;
+    }
+
+    //下
+    if(bombs[index+width]){
+      count++;
+    }
+
+    //左
+    if(index%width !== 0){
+      //左
+      if(index%width !== 0 && bombs[index-1]){
+        count++;
+      }
+      //左上
+      if(bombs[index-width-1]){
+        count++;
+      }
+      //左下
+      if(bombs[index+width-1]){
+        count++;
+      }
+    }
+
+    //右
+    if((index+1)%width !== 0){
+      //右
+      if(bombs[index+1]){
+        count++;
+      }
+      //右上
+      if(bombs[index-width+1]){
+        count++;
+      }
+      //右下
+      if(bombs[index+width+1]){
+        count++;
+      }
+    }
+
+    return count | '';
+  };
+
+  var numToString = function(num){
+    switch(num){
+      case -1:
+        console.log('Bomb!!');
+        return 'B';
+      case 0:
+        return '';
+      default:
+        return num.toString();
+    }
+  };
+
 
   var checkComplete = function(){
     var arr = _.filter(
@@ -38,7 +148,7 @@ angular
     tile.isOpen = true;
     switch (tile.number) {
       case 'B':
-        setGameStatus('gameOver');
+        setGameStatus($settingConst.status.gameOver);
         return;
 
       case '':
@@ -47,7 +157,7 @@ angular
 
       default:
         if(checkGameComplete()){
-          setGameStatus('gameComplete');
+          setGameStatus($settingConst.status.gameComplete);
         }
     }
 
@@ -66,7 +176,7 @@ angular
   var openAroundTiles = function(index){
     var d = gameSettings.dementions;
 
-    //　なんかもっとうまい方法ありそう．
+    // なんかもっとうまい方法ありそう．
     //上
     if(tiles[index-d.width]){
       openTile(index-d.width);
