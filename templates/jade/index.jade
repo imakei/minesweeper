@@ -10,8 +10,9 @@ html(ng-app='ngMineSweeper')
         h1 {{ title }}
       .game-container(onContextmenu='return false' ng-style='gameSettings.container.size')
         .message-container(ng-if='game.status === "gameOver"') game over ...
-          .reset(ng-click='reset()') Game Reset
+          .reset(ng-click='reset()') New Game
         .message-container(ng-if='game.status === "gameComplete"') game complete!!
+          .reset(ng-click='reset()') New Game
         .tile-container.cf
           .tile(ng-repeat='tile in tiles' class='tile-{{gameSettings.tileSize}}' tile check-game-complete='checkGameComplete')
       .game-config
